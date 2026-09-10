@@ -1,0 +1,672 @@
+/* =================================================================
+   TECHFEST // INTO THE FUTURE — STYLESHEET
+   Design tokens, layout, animation, and responsive rules.
+   ================================================================= */
+
+:root {
+  /* --- Color tokens --- */
+  --bg-void:        #030712;
+  --bg-deep:        #070b18;
+  --cyan:           #4df3ff;
+  --cyan-soft:      rgba(77, 243, 255, 0.35);
+  --violet:         #9b6bff;
+  --violet-soft:    rgba(155, 107, 255, 0.35);
+  --white-soft:     #eaf2ff;
+  --ink-dim:        #7c8bab;
+  --ink-faint:      #4a5578;
+  --panel-glass:    rgba(9, 14, 32, 0.72);
+  --border-glass:   rgba(150, 180, 255, 0.14);
+
+  /* --- Type tokens --- */
+  --font-display: 'Orbitron', 'Segoe UI', sans-serif;
+  --font-body:    'Rajdhani', 'Segoe UI', sans-serif;
+
+  /* --- Layout tokens --- */
+  --nav-height: 76px;
+  --edge: clamp(1.5rem, 5vw, 4rem);
+}
+
+/* --- Reset --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg-void);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--white-soft);
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100%;
+}
+
+body.is-loading {
+  overflow: hidden;
+  height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button { font-family: var(--font-body); border: none; background: none; cursor: pointer; }
+
+ul { list-style: none; }
+
+img, canvas { display: block; max-width: 100%; }
+
+/* --- Visible focus states (accessibility) --- */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* =================================================================
+   LOADER — SCENE 1
+   ================================================================= */
+
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at 50% 40%, #0a1128 0%, var(--bg-void) 70%);
+  transition: opacity 0.9s ease, visibility 0.9s ease;
+}
+
+#loader.loader-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(77, 243, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77, 243, 255, 0.05) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at 50% 50%, black 0%, transparent 72%);
+}
+
+.loader-content {
+  position: relative;
+  text-align: center;
+  width: min(90vw, 460px);
+}
+
+.loader-kicker {
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  color: var(--ink-dim);
+  margin-bottom: 1rem;
+}
+
+.loader-title {
+  font-size: clamp(2.4rem, 9vw, 4rem);
+  color: var(--white-soft);
+  text-shadow: 0 0 24px var(--cyan-soft), 0 0 60px var(--violet-soft);
+  margin-bottom: 0.6rem;
+}
+
+.loader-subtitle {
+  font-size: 0.95rem;
+  letter-spacing: 0.18em;
+  color: var(--cyan);
+  margin-bottom: 2.2rem;
+}
+
+.dots span { animation: dotPulse 1.4s infinite; opacity: 0; }
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+.loader-bar-track {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.loader-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  box-shadow: 0 0 14px var(--cyan), 0 0 28px var(--violet-soft);
+}
+
+.loader-percent {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin-bottom: 2rem;
+}
+
+.loader-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  min-height: 5.5em;
+}
+
+.loader-messages li {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.loader-messages li.visible {
+  opacity: 1;
+  transform: translateY(0);
+  color: var(--cyan);
+}
+
+/* =================================================================
+   3D CANVAS
+   ================================================================= */
+
+#webgl {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  outline: none;
+}
+
+/* =================================================================
+   NAVIGATION
+   ================================================================= */
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--nav-height);
+  padding: 0 var(--edge);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+.nav.nav-scrolled {
+  background: rgba(5, 9, 22, 0.55);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--border-glass);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--white-soft);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.4rem;
+}
+
+.nav-links a {
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  color: var(--ink-dim);
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  transition: width 0.35s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.nav-active {
+  color: var(--white-soft);
+}
+
+.nav-links a:hover::after,
+.nav-links a.nav-active::after {
+  width: 100%;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+}
+
+.nav-toggle span {
+  display: block;
+  height: 2px;
+  background: var(--white-soft);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* =================================================================
+   SCENE SECTIONS — shared
+   ================================================================= */
+
+#content {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--edge);
+  text-align: center;
+}
+
+.scene-inner {
+  max-width: 780px;
+  pointer-events: none;
+}
+
+.scene-inner--top {
+  padding-top: 14vh;
+}
+
+/* Section heights — proportional scroll "runway" for the camera path */
+.scene-portal  { height: 100vh; }
+.scene-universe{ height: 280vh; align-items: flex-start; }
+.scene-core    { height: 160vh; }
+.scene-tunnel  { height: 320vh; }
+.scene-future  { height: 160vh; }
+
+/* --- Reveal utility (driven by ScrollTrigger toggleClass) --- */
+.fade-line,
+.reveal-up {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-line.in-view,
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =================================================================
+   SCENE 2 — PORTAL
+   ================================================================= */
+
+.portal-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  color: var(--cyan);
+  margin-bottom: 1.4rem;
+}
+
+.portal-title {
+  font-size: clamp(3rem, 11vw, 7rem);
+  color: var(--white-soft);
+  text-shadow: 0 0 30px var(--cyan-soft), 0 0 80px var(--violet-soft);
+}
+
+.portal-subtitle {
+  margin-top: 1rem;
+  font-size: clamp(0.95rem, 2vw, 1.3rem);
+  letter-spacing: 0.22em;
+  color: var(--ink-dim);
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 3.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.28em;
+  color: var(--ink-dim);
+}
+
+.scroll-indicator-track {
+  width: 1px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.14);
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-indicator-dot {
+  position: absolute;
+  top: -10px;
+  left: -1.5px;
+  width: 4px;
+  height: 14px;
+  border-radius: 2px;
+  background: linear-gradient(var(--cyan), transparent);
+  animation: scrollDot 2s ease-in-out infinite;
+}
+
+@keyframes scrollDot {
+  0% { top: -14px; }
+  70% { top: 44px; }
+  100% { top: 44px; }
+}
+
+/* =================================================================
+   SCENE 3 — TECHNOLOGY UNIVERSE
+   ================================================================= */
+
+.scene-label {
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  color: var(--white-soft);
+}
+
+.scene-caption {
+  margin-top: 0.9rem;
+  font-size: 1rem;
+  color: var(--ink-dim);
+  letter-spacing: 0.02em;
+}
+
+/* =================================================================
+   SCENE 4 — AI CORE
+   ================================================================= */
+
+.core-title {
+  font-size: clamp(2.4rem, 7vw, 4.4rem);
+  color: var(--white-soft);
+  text-shadow: 0 0 26px var(--violet-soft), 0 0 60px var(--cyan-soft);
+}
+
+.core-subtitle {
+  margin-top: 1rem;
+  font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+  letter-spacing: 0.16em;
+  color: var(--ink-dim);
+}
+
+/* =================================================================
+   SCENE 5 — TUNNEL
+   ================================================================= */
+
+.scene-tunnel {
+  align-items: flex-start;
+  padding-top: 0;
+}
+
+.tunnel-word {
+  position: sticky;
+  top: 42vh;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 9vw, 5.5rem);
+  letter-spacing: 0.1em;
+  color: var(--white-soft);
+  text-shadow: 0 0 40px var(--cyan-soft), 0 0 90px var(--violet-soft);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  pointer-events: none;
+}
+
+.tunnel-word.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* stack all four words on top of one another via sticky positioning */
+.tunnel-word { height: 0; }
+
+/* =================================================================
+   SCENE 6 — FUTURE UNIVERSE
+   ================================================================= */
+
+.future-title {
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
+  color: var(--white-soft);
+  text-shadow: 0 0 30px var(--cyan-soft), 0 0 70px var(--violet-soft);
+}
+
+.future-year {
+  margin-top: 1.1rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  color: var(--ink-dim);
+}
+
+.cta-button {
+  pointer-events: auto;
+  margin-top: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1rem 2.1rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  color: var(--white-soft);
+  border: 1px solid var(--border-glass);
+  border-radius: 999px;
+  background: rgba(77, 243, 255, 0.04);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.3s ease, background 0.4s ease;
+}
+
+.cta-button:hover,
+.cta-button:focus-visible {
+  border-color: var(--cyan);
+  background: rgba(77, 243, 255, 0.1);
+  box-shadow: 0 0 24px var(--cyan-soft), 0 0 60px var(--violet-soft);
+  transform: translateY(-2px);
+}
+
+.cta-arrow {
+  transition: transform 0.35s ease;
+}
+
+.cta-button:hover .cta-arrow {
+  transform: translateX(5px);
+}
+
+/* =================================================================
+   INFO PANEL (technology detail overlay)
+   ================================================================= */
+
+.info-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+  background: rgba(2, 5, 14, 0.55);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.info-panel-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.info-panel {
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  left: 50%;
+  width: min(90vw, 420px);
+  padding: 2.2rem 2rem;
+  background: var(--panel-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 18px;
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 30px 80px rgba(0,0,0,0.55), 0 0 60px var(--cyan-soft);
+  transform: translate(-50%, -50%) scale(0.92);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.info-panel.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.info-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-dim);
+  border: 1px solid var(--border-glass);
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.info-close:hover,
+.info-close:focus-visible {
+  color: var(--white-soft);
+  border-color: var(--cyan);
+  transform: rotate(90deg);
+}
+
+.info-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: var(--cyan);
+  margin-bottom: 0.8rem;
+}
+
+.info-title {
+  font-size: 1.35rem;
+  color: var(--white-soft);
+  margin-bottom: 1rem;
+  padding-right: 1.5rem;
+}
+
+.info-desc {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink-dim);
+}
+
+/* =================================================================
+   CURSOR STATE (interactive 3D objects)
+   ================================================================= */
+
+body.cursor-interactive,
+body.cursor-interactive #webgl {
+  cursor: pointer;
+}
+
+/* =================================================================
+   RESPONSIVE
+   ================================================================= */
+
+@media (max-width: 860px) {
+  .nav-links {
+    position: fixed;
+    top: var(--nav-height);
+    right: 0;
+    left: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+    padding: 2rem 0 2.4rem;
+    background: rgba(5, 9, 22, 0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-glass);
+    transform: translateY(-8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+  }
+
+  .nav-links.nav-open {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .nav-toggle { display: flex; pointer-events: auto; }
+
+  .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
+
+@media (max-width: 600px) {
+  :root { --nav-height: 64px; }
+
+  .scene-universe { height: 320vh; }
+  .scene-tunnel { height: 380vh; }
+
+  .info-panel { padding: 1.8rem 1.5rem; }
+}
+
+/* =================================================================
+   REDUCED MOTION
+   ================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  .fade-line,
+  .reveal-up,
+  .tunnel-word,
+  .cta-button,
+  .info-panel,
+  .loader-messages li {
+    transition-duration: 0.01ms !important;
+  }
+
+  .scroll-indicator-dot { animation: none; }
+  .dots span { animation: none; opacity: 1; }
+}

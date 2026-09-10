@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>TECHFEST // INTO THE FUTURE</title>
+  <meta name="description" content="A cinematic 3D interactive web experience for Techfest 2026 — Build in 3D." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-loading">
+
+  <!-- ============================================= -->
+  <!-- SCENE 1 — LOADING EXPERIENCE                   -->
+  <!-- ============================================= -->
+  <div id="loader" role="status" aria-live="polite">
+    <div class="loader-grid" aria-hidden="true"></div>
+    <div class="loader-content">
+      <p class="loader-kicker">BOOT SEQUENCE</p>
+      <h1 class="loader-title">TECHFEST</h1>
+      <p class="loader-subtitle">INITIALIZING FUTURE SYSTEM<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+
+      <div class="loader-bar-track">
+        <div class="loader-bar-fill" id="loaderBarFill"></div>
+      </div>
+      <p class="loader-percent" id="loaderPercent">0%</p>
+
+      <ul class="loader-messages" id="loaderMessages"></ul>
+    </div>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- THREE.JS CANVAS (single continuous scene)      -->
+  <!-- ============================================= -->
+  <canvas id="webgl" aria-hidden="true"></canvas>
+
+  <!-- ============================================= -->
+  <!-- NAVIGATION                                     -->
+  <!-- ============================================= -->
+  <nav id="mainNav" class="nav">
+    <a href="#scene-portal" class="nav-logo">TECHFEST&nbsp;//&nbsp;2026</a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle navigation menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#scene-portal" data-nav-link>EXPLORE</a></li>
+      <li><a href="#scene-universe" data-nav-link>TECHNOLOGIES</a></li>
+      <li><a href="#scene-future" data-nav-link>THE FUTURE</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============================================= -->
+  <!-- SCROLL CONTENT                                 -->
+  <!-- ============================================= -->
+  <main id="content">
+
+    <!-- SCENE 2 — THE FUTURE PORTAL -->
+    <section class="scene scene-portal" id="scene-portal" data-scene="portal">
+      <div class="scene-inner">
+        <p class="portal-kicker fade-line">A CINEMATIC JOURNEY THROUGH TOMORROW</p>
+        <h1 class="portal-title fade-line">TECHFEST</h1>
+        <p class="portal-subtitle fade-line">THE FUTURE STARTS HERE</p>
+      </div>
+      <div class="scroll-indicator fade-line">
+        <span>SCROLL TO ENTER</span>
+        <div class="scroll-indicator-track"><div class="scroll-indicator-dot"></div></div>
+      </div>
+    </section>
+
+    <!-- SCENE 3 — THE TECHNOLOGY UNIVERSE -->
+    <section class="scene scene-universe" id="scene-universe" data-scene="universe">
+      <div class="scene-inner scene-inner--top">
+        <h2 class="scene-label reveal-up">TECHNOLOGIES</h2>
+        <p class="scene-caption reveal-up">Five forces reshaping what's possible. Hover to activate. Click to learn more.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 4 — AI CORE -->
+    <section class="scene scene-core" id="scene-core" data-scene="core">
+      <div class="scene-inner">
+        <h2 class="core-title reveal-up">INTELLIGENCE</h2>
+        <p class="core-subtitle reveal-up">THE POWER TO IMAGINE THE IMPOSSIBLE.</p>
+      </div>
+    </section>
+
+    <!-- SCENE 5 — THE DIGITAL TUNNEL -->
+    <section class="scene scene-tunnel" id="scene-tunnel" data-scene="tunnel">
+      <div class="tunnel-word" data-index="0">IMAGINE</div>
+      <div class="tunnel-word" data-index="1">INNOVATE</div>
+      <div class="tunnel-word" data-index="2">CREATE</div>
+      <div class="tunnel-word" data-index="3">TRANSFORM</div>
+    </section>
+
+    <!-- SCENE 6 — FUTURE UNIVERSE -->
+    <section class="scene scene-future" id="scene-future" data-scene="future">
+      <div class="scene-inner">
+        <h2 class="future-title reveal-up">THE FUTURE<br />IS BUILT HERE.</h2>
+        <p class="future-year reveal-up">TECHFEST 2026</p>
+        <button class="cta-button reveal-up" id="ctaButton">
+          <span>EXPLORE THE FUTURE</span>
+          <span class="cta-arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================= -->
+  <!-- INFO PANEL (technology detail overlay)         -->
+  <!-- ============================================= -->
+  <aside class="info-panel" id="infoPanel" aria-hidden="true">
+    <button class="info-close" id="infoClose" aria-label="Close panel">✕</button>
+    <p class="info-eyebrow" id="infoEyebrow"></p>
+    <h3 class="info-title" id="infoTitle"></h3>
+    <p class="info-desc" id="infoDesc"></p>
+  </aside>
+
+  <div class="info-panel-backdrop" id="infoBackdrop"></div>
+
+  <!-- ============================================= -->
+  <!-- LIBRARIES (CDN)                                -->
+  <!-- ============================================= -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
